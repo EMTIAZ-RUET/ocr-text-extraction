@@ -1,0 +1,59 @@
+# Google Cloud Build configuration for frontend deployment
+# This file automates the build and deployment process to Cloud Run
+
+steps:
+  # Build the container image with backend URL
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/ocr-frontend:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/ocr-frontend:latest'
+      - '--build-arg'
+      - 'VITE_API_BASE_URL=${_BACKEND_URL}/api'
+      - '.'
+    dir: 'frontend'
+
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/ocr-frontend:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/ocr-frontend:latest'
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'ocr-frontend'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/ocr-frontend:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '80'
+      - '--memory'
+      - '512Mi'
+
+images:
+  - 'gcr.io/$PROJECT_ID/ocr-frontend:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/ocr-frontend:latest'
+
+substitutions:
+  _BACKEND_URL: 'https://ocr-backend-xxxxx-uc.a.run.app'
+
+options:
+  machineType: 'N1_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: '1200s'
