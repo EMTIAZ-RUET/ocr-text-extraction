@@ -13,11 +13,35 @@ A serverless OCR API that extracts text from JPG/JPEG images using Google Cloud 
 ## Quick Start
 
 ### Prerequisites
-- Python 3.11+
+- Docker & Docker Compose (recommended)
+- OR Python 3.11+ & Node.js 18+ (for manual setup)
 - Google Cloud Account (for Vision API)
-- Docker (optional)
 
-### Local Development
+### 🐳 **Easy Setup with Docker Compose (Recommended)**
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/EMTIAZ-RUET/ocr-text-extraction.git
+cd ocr-text-extraction
+```
+
+2. **Add Google Cloud Credentials (Optional)**
+```bash
+# Place your service account key file as 'credentials.json'
+# Skip this step to run without OCR functionality
+```
+
+3. **Start the application**
+```bash
+./docker-setup.sh
+```
+
+**That's it!** The application will be available at:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8080
+- **API Docs**: http://localhost:8080/docs
+
+### 🔧 **Manual Local Development**
 
 1. **Install Dependencies**
 ```bash
@@ -80,6 +104,47 @@ Health check endpoint.
 }
 ```
 
+## 🐳 Docker Compose Commands
+
+### Start the application
+```bash
+# Start all services
+docker-compose up -d
+
+# Start with build (if you made changes)
+docker-compose up --build -d
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+```
+
+### Individual service management
+```bash
+# Start only backend
+docker-compose up backend -d
+
+# Restart frontend
+docker-compose restart frontend
+
+# View backend logs
+docker-compose logs backend
+```
+
+### Troubleshooting
+```bash
+# Check service status
+docker-compose ps
+
+# Rebuild specific service
+docker-compose build backend
+
+# Remove all containers and volumes
+docker-compose down -v
+```
+
 ## Google Cloud Run Deployment
 
 ### Deploy Backend
@@ -116,8 +181,13 @@ PROJECT_ID=$PROJECT_ID BACKEND_URL=$BACKEND_URL ./deploy-frontend.sh
 │       └── services/
 │           └── ocr_google.py    # Google Vision OCR
 ├── frontend/               # React Frontend
+│   ├── Dockerfile          # Frontend container
+│   └── src/               # React source code
+├── docker-compose.yml     # Docker Compose configuration
+├── docker-setup.sh        # Easy Docker setup script
 ├── test_image.jpg         # Sample test image
-└── deploy-*.sh           # Deployment scripts
+├── credentials.json       # Google Cloud credentials (add this)
+└── deploy-*.sh           # Cloud deployment scripts
 ```
 
 ## Configuration
