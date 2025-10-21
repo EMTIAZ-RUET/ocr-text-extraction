@@ -1,14 +1,6 @@
-# OCR Image Text Extraction System - Enhanced Edition
+# OCR Image Text Extraction System
 
-A complete, production-ready full-stack OCR (Optical Character Recognition) system that extracts text from JPG/JPEG/PNG/GIF images. Built with FastAPI backend and React frontend, using Google Cloud Vision API for high-accuracy text extraction. Features Redis caching, rate limiting, and optimized for Google Cloud Run deployment.
-
-## 🆕 **Enhanced Features**
-- **🚀 Redis Caching**: Instant responses for identical images
-- **⚡ Rate Limiting**: 30 requests/minute protection with slowapi
-- **🖼️ Multi-Format Support**: JPG, JPEG, PNG, GIF images
-- **📊 Cache Management**: Statistics and cache clearing endpoints
-- **🔒 Enhanced Security**: Improved validation and error handling
-- **📈 Performance Monitoring**: Detailed logging and metrics
+A serverless OCR (Optical Character Recognition) API that extracts text from JPG/JPEG images. Built with FastAPI backend and React frontend, using Google Cloud Vision API for high-accuracy text extraction. Optimized for Google Cloud Run deployment.
 
 ## 🎯 Overview
 
@@ -134,7 +126,7 @@ Edit `backend/config.py`:
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| `OCR_ENGINE` | OCR engine: "google" or "tesseract" | "google" |
+| `OCR_ENGINE` | OCR engine (Google Cloud Vision) | "google" |
 | `MAX_FILE_SIZE_MB` | Maximum upload size in MB | 10 |
 | `ALLOWED_EXTENSIONS` | Allowed file extensions | {"jpg", "jpeg"} |
 | `LOG_LEVEL` | Logging level | "INFO" |
@@ -173,42 +165,13 @@ curl -X POST "http://localhost:8080/api/extract-text" \
 
 ### GET /api/health
 
-Health check endpoint with enhanced information.
+Health check endpoint.
 
 **Response:**
 ```json
 {
   "status": "healthy",
-  "ocr_engine": "google",
-  "cache_enabled": true,
-  "supported_formats": ["jpg", "jpeg", "png", "gif"]
-}
-```
-
-### GET /api/cache/stats
-
-Get cache statistics and performance metrics.
-
-**Response:**
-```json
-{
-  "enabled": true,
-  "total_keys": 42,
-  "memory_usage": "2.1MB",
-  "connected_clients": 3,
-  "cache_ttl_seconds": 3600
-}
-```
-
-### DELETE /api/cache/clear
-
-Clear all cached OCR results (rate limited to 5/minute).
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Cache cleared successfully"
+  "ocr_engine": "google"
 }
 ```
 
@@ -221,9 +184,6 @@ cd backend
 
 # Build image
 docker build -t ocr-backend .
-
-# Run with Tesseract
-docker run -p 8080:8080 -e OCR_ENGINE=tesseract ocr-backend
 
 # Run with Google Cloud Vision
 docker run -p 8080:8080 \

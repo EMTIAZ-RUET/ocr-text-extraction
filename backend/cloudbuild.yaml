@@ -32,7 +32,7 @@ steps:
       - 'managed'
       - '--allow-unauthenticated'
       - '--set-env-vars'
-      - 'OCR_ENGINE=google,REDIS_URL=redis://localhost:6379,RATE_LIMIT_REQUESTS=30,CACHE_TTL_SECONDS=3600'
+      - 'OCR_ENGINE=google'
       - '--memory'
       - '1Gi'
       - '--cpu'
@@ -41,8 +41,6 @@ steps:
       - '10'
       - '--timeout'
       - '300'
-      - '--add-cloudsql-instances'
-      - '$PROJECT_ID:us-central1:redis-instance'
 
 images:
   - 'gcr.io/$PROJECT_ID/ocr-backend:$COMMIT_SHA'
